@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-export const user = new Schema({
+import { models, Schema,model } from "mongoose";
+const user = new Schema({
     clerkId : {type : String,required : true,unique : true},
     uname: { type: String, required: true, unique: true },
 
@@ -37,3 +37,5 @@ export const user = new Schema({
     caption : {type : String, required : true},
     online : {type : Boolean,default : false},
 })
+
+export const User = models.user || model('User', user);
