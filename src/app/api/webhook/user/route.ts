@@ -9,7 +9,8 @@ export async function POST(req: Request) {
     if (!WEBHOOK_SECRET) {
         throw new Error('Error: Please add SIGNING_SECRET from Clerk Dashboard to .env file')
     }
-    console.log(req.json())
+    const data = await req.json()
+    console.log(data)
     const wh = new Webhook(WEBHOOK_SECRET)
 
     const headerPayload = await headers()
