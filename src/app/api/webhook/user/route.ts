@@ -4,6 +4,7 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { User } from '@/models/user' // Ensure correct import
 
 export async function POST(req: Request) {
+    console.log("in webhook user")
     const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
 
     if (!WEBHOOK_SECRET) {
