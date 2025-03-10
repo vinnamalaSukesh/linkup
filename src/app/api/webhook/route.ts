@@ -43,11 +43,10 @@ export async function POST(req: Request) {
     }
 
     const eventType = evt.type
-    
+
     await connect()
 
     if (eventType === 'user.created') {
-        console.log('in create')
         const { id: clerkUserId, username } = evt.data
 
         try {
@@ -69,17 +68,44 @@ export async function POST(req: Request) {
         }
     }
     else if(eventType == "user.deleted"){
-        console.log("in deleted")
+        const {id : clerkUserId} = evt.data
+        try {
+            const deletedUser = await User.findOneAndDelete({
+                clerkId : clerkUserId
+            })
+            return new Response(JSON.stringify({ message : 'User  deleted', user : deletedUser }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        }
+        catch(err){
+            console.error('Error in deleting user',err)
+            return new Response(JSON.stringify({ error: 'User not deleted' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        }
+        }
+    else if(eventType == "user.updated"){
+        const {id : clerkUserId, username} = evt.data
+        try{
+            const updateUser = await User.findOneAndUpdate(
+                { clerkId: clerkUserId }, { $set: { uname: username } }, { new: true })
+                
+        return new Response(JSON.stringify({ message : 'User not created' ,user : updateUser}), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        })
+        }
+        catch(error){
+        return new Response(JSON.stringify({ error: `User not created ${error}` }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        })
+        }
     }
-    else{
-        console.log("in update")
-    }
-
-    console.log(`Received webhook with ID ${evt.data.id} and event type ${eventType}`)
-    console.log('Webhook payload:', body)
-
-    return new Response(JSON.stringify({ message: 'Webhook received' }), {
-        status: 200,
+    return new Response(JSON.stringify({ message: 'Webhook received but event type not match' }), {
+        status: 400,
         headers: { 'Content-Type': 'application/json' },
     })
 }
