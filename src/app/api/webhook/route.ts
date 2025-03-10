@@ -4,13 +4,13 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { User } from '@/models/user'
 
 export async function POST(req: Request) {
-    const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
+    const SIGNING_SECRET = process.env.SIGNING_SECRET
 
-    if (!WEBHOOK_SECRET) {
+    if (!SIGNING_SECRET) {
         throw new Error('Error: Please add SIGNING_SECRET from Clerk Dashboard to .env file')
     }
     const data = await req.json()
-    const wh = new Webhook(WEBHOOK_SECRET)
+    const wh = new Webhook(SIGNING_SECRET)
 
     const headerPayload = await headers()
     const svix_id = headerPayload.get('svix-id')
