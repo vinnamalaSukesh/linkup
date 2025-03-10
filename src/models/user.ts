@@ -32,10 +32,10 @@ const user = new Schema({
                         }]
         },
 
-    profilePic : {type : String, required : true},
-    coverPic : {type : String, required : true},
-    caption : {type : String, required : true},
-    online : {type : Boolean,default : false},
+    profilePic : {type : String, default : ""},
+    coverPic: { type: String, default: "" },
+    caption: { type: String, default: "" },
+    online: { type: Boolean, default: false },
 })
 
-export const User = models.user || model('User', user);
+export const User = models["User"] || model("User", user);

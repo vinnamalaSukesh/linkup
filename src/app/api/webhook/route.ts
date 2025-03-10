@@ -1,17 +1,15 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import { User } from '@/models/user' // Ensure correct import
+import { User } from '@/models/user'
 
 export async function POST(req: Request) {
-    console.log("in webhook user")
     const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
 
     if (!WEBHOOK_SECRET) {
         throw new Error('Error: Please add SIGNING_SECRET from Clerk Dashboard to .env file')
     }
     const data = await req.json()
-    console.log(data)
     const wh = new Webhook(WEBHOOK_SECRET)
 
     const headerPayload = await headers()
@@ -26,8 +24,7 @@ export async function POST(req: Request) {
         })
     }
 
-    const payload = await req.json()
-    const body = JSON.stringify(payload)
+    const body = JSON.stringify(data)
 
     let evt: WebhookEvent
 
@@ -67,6 +64,12 @@ export async function POST(req: Request) {
                 headers: { 'Content-Type': 'application/json' },
             })
         }
+    }
+    else if(eventType == "user.deleted"){
+        console.log("in deleted")
+    }
+    else{
+        console.log("in update")
     }
 
     console.log(`Received webhook with ID ${evt.data.id} and event type ${eventType}`)
