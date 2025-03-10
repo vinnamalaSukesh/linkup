@@ -2,10 +2,10 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { User } from '@/models/user'
+import { connect } from '@/models/connect'
 
 export async function POST(req: Request) {
     const SIGNING_SECRET = process.env.SIGNING_SECRET
-
     if (!SIGNING_SECRET) {
         throw new Error('Error: Please add SIGNING_SECRET from Clerk Dashboard to .env file')
     }
@@ -43,8 +43,11 @@ export async function POST(req: Request) {
     }
 
     const eventType = evt.type
+    
+    await connect()
 
     if (eventType === 'user.created') {
+        console.log('in create')
         const { id: clerkUserId, username } = evt.data
 
         try {
